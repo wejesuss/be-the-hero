@@ -25,7 +25,8 @@ module.exports = {
         return res.json({ id })
     },
     async delete(req, res) {
-        const ongs = await connection('ongs').delete().from('ongs').where('id', '03cc2a0b')
+        const { id } = req.body
+        const ongs = await connection('ongs').delete().from('ongs').where('id', id)
     
         return res.json({ ongs })
     }

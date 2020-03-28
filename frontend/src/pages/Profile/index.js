@@ -16,7 +16,7 @@ export default function Profile() {
     
     const history = useHistory()
 
-    useEffect(() => {
+    function loadIncidents() {
         api.get(`profile?page=${page}`, {
             headers: {
                 authorization: ong_id
@@ -27,6 +27,10 @@ export default function Profile() {
            const totalIncidents = response.headers["count-total"]
            setTotal(Math.ceil(totalIncidents / 6))
         })
+    }
+
+    useEffect(() => {
+        loadIncidents();
     }, [ong_id, page])
     
     async function handleDeleteIncidents(id) {
@@ -36,8 +40,14 @@ export default function Profile() {
                     authorization: ong_id
                 }
             })
-
-            setIncidents(incidents.filter(incident => incident.id !== id))
+                        
+            if(total >= 2) {
+                if(incidents.length === 1) setPage(page - 1)
+                
+                loadIncidents();
+            } else {
+                setIncidents(incidents.filter(incident => incident.id !== id))
+            }
         } catch (err) {
             alert('Erro ao deletar incidente, tente novamente.')
         }
